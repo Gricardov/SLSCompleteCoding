@@ -9,3 +9,14 @@
 6- Open serverless.yml and add "profile: serverlessUser" in profile.
 7- Deploy with:
     > serverless deploy
+
+npm installs:
+serverless-s3-sync
+serverless-webpack
+webpack
+
+Deploy with:
+    > sls deploy
+
+Deply only functions with:
+    > sls deploy -f <function-name>
