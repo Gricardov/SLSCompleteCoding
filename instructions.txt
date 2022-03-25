@@ -1,0 +1,11 @@
+1- Create an IAM user, "serverlessAccount".
+2- Give programmatic acces and Attach policy directly, "Administration Access".
+3- Copy Access key ID and Secret Access key
+4- In terminal:
+    > npm i -g serverless
+    > serverless config credentials --provider aws --key <Access key ID> --secret <Secret Access key> --profile serverlessUser
+5- Create a new serverless project, in terminal:
+    > serverless create --template aws-nodejs --path myServerlessProject
+6- Open serverless.yml and add "profile: serverlessUser" in profile.
+7- Deploy with:
+    > serverless deploy
