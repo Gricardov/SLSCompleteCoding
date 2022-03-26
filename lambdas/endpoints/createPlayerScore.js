@@ -21,7 +21,7 @@ exports.handler = async event => {
     });
 
     if (!newUser) {
-        return Responses._400({ message: 'Failed to wirte user by id' });
+        return Responses._400({ message: 'Failed to write user by id' });
     }
 
     return Responses._200({ newUser });
