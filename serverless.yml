@@ -18,15 +18,25 @@ provider:
       Resource: "*"
   apiGateway:
     apiKeys:
-      - MyFirstApiKey # For API keys
+      - free:
+        - myFreeApiKey
+      - paid:
+        - myPaidApiKey
     usagePlan:
-      quota:
-        limit: 1000
-        period: MONTH # This means 1000 calls / month as maximum
-      throttle:
-        rateLimit: 5 # Maximum calls per second as average (To avoid DDOS)
-        burstLimit: 20 # For a short burst, the maximum calls per second
-
+      - free:
+          quota:
+            limit: 1000
+            period: MONTH # This means 1000 calls / month as maximum
+          throttle:
+            rateLimit: 5 # Maximum calls per second as average (To avoid DDOS)
+            burstLimit: 20 # For a short burst, the maximum calls per second
+      - paid: # To allow unlimited, dont include quota object
+          quota:
+            limit: 10000 
+            period: MONTH
+          throttle:
+            rateLimit: 50
+            burstLimit: 200
 plugins:
   - serverless-s3-sync
   - serverless-webpack
