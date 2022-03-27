@@ -19,6 +19,13 @@ provider:
   apiGateway:
     apiKeys:
       - MyFirstApiKey # For API keys
+    usagePlan:
+      quota:
+        limit: 1000
+        period: MONTH # This means 1000 calls / month as maximum
+      throttle:
+        rateLimit: 5 # Maximum calls per second as average (To avoid DDOS)
+        burstLimit: 20 # For a short burst, the maximum calls per second
 
 plugins:
   - serverless-s3-sync
