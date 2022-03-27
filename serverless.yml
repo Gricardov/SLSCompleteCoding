@@ -88,6 +88,19 @@ functions:
           path: get-file/{fileName}
           method: GET
           cors: true
+  myProxy:
+    handler: lambdas/endpoints/myProxy.handler
+    events:
+      - http:
+          path: chuck-norris/{proxy+} # Multiple layers of proxy integration
+          method: ANY
+          integration: http-proxy
+          request:
+            uri: http://api.icndb.com/{proxy}
+            parameters:
+              paths:
+                proxy: true
+
 
 resources:
   Resources:
