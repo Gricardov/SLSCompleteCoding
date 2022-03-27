@@ -16,6 +16,9 @@ provider:
         - dynamodb:*
         - s3:*
       Resource: "*"
+  apiGateway:
+    apiKeys:
+      - MyFirstApiKey # For API keys
 
 plugins:
   - serverless-s3-sync
@@ -39,6 +42,7 @@ functions:
           path: get-user/{ID}
           method: GET
           cors: true
+          private: true # For API keys
   getPlayerScore:
     handler: lambdas/endpoints/getPlayerScore.handler
     events:
