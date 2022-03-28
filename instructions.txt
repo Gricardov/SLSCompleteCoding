@@ -20,3 +20,12 @@ Deploy with:
 
 Deply only functions with:
     > sls deploy -f <function-name>
+
+FOR AMPLIFY:
+    > npm install -g @aws-amplify/cli
+    > npx create-react-app <app-name>
+    > amplify configure (be logged in as admin to setup IAM roles, etc)
+    > amplify init
+    > amplify add auth
+    > amplify push
+    > npm i --save aws-amplify @aws-amplify/ui-react

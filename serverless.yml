@@ -7,6 +7,7 @@ provider:
   runtime: nodejs12.x
   profile: serverlessUser
   region: us-east-1
+  stage: ${opt:stage, 'dev'}
   environment:
     tableName: ${self:custom.tableName}
     bucketName: ${self:custom.bucketName}
@@ -119,3 +120,20 @@ resources:
           - AttributeName: ID
             KeyType: HASH
         BillingMode: PAY_PER_REQUEST
+    CognitoUserPool:
+      Type: AWS::Cognito::UserPool
+      Properties:
+        UserPoolName: ${self:provider.stage}-user-pool
+        UsernameAttributes:
+          - email
+        AutoVerifiedAttributes:
+          - email
+    CognitoUserPoolClient:
+      Type: AWS::Cognito::UserPoolClient
+      Properties:
+        ClientName: ${self:provider.stage}-user-pool-client
+        UserPoolId:
+          Ref: CognitoUserPool # This user can acces this user pool
+        ExplicitAuthFlows:
+          - ADMIN_NO_SRP_AUTH
+        GenerateSecret: false
