@@ -14,12 +14,24 @@ provider:
     - Effect: Allow
       Action:
         - dynamodb:*
+        - sns:SetSMSAttributes
+        - sns:Publish
       Resource: "*"
 
 custom:
   tableName: WebsocketUsers
 
 functions:
+  # SMS
+  sendSMS:
+    handler: lambdas/endpoints/sendSMS.handler
+    events:
+      - http:
+          path: send-sms
+          method: POST
+          cors: true
+
+  # websocket
   websocket-connect:
     handler: lambdas/websockets/connect.handler
     events:
