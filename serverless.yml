@@ -16,13 +16,14 @@ provider:
       Action:
         - dynamodb:*
         - s3:*
+        - ses:*
       Resource: "*"
   apiGateway:
     apiKeys:
       - free:
-        - myFreeApiKey
+          - myFreeApiKey
       - paid:
-        - myPaidApiKey
+          - myPaidApiKey
     usagePlan:
       - free:
           quota:
@@ -33,7 +34,7 @@ provider:
             burstLimit: 20 # For a short burst, the maximum calls per second
       - paid: # To allow unlimited, dont include quota object
           quota:
-            limit: 10000 
+            limit: 10000
             period: MONTH
           throttle:
             rateLimit: 50
@@ -101,7 +102,13 @@ functions:
             parameters:
               paths:
                 proxy: true
-
+  sendEmail:
+    handler: lambdas/endpoints/sendEmail.handler
+    events:
+      - http:
+          path: send-email
+          method: POST
+          cors: true
 
 resources:
   Resources:
