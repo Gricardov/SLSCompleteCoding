@@ -1,4 +1,4 @@
-service: myserverlessproject
+service: myserverlessproject2
 
 frameworkVersion: "3"
 
@@ -10,113 +10,40 @@ provider:
   stage: ${opt:stage, 'dev'}
   environment:
     tableName: ${self:custom.tableName}
-    bucketName: ${self:custom.bucketName}
   iamRoleStatements:
     - Effect: Allow
       Action:
         - dynamodb:*
-        - s3:*
-        - ses:*
       Resource: "*"
-  apiGateway:
-    apiKeys:
-      - free:
-          - myFreeApiKey
-      - paid:
-          - myPaidApiKey
-    usagePlan:
-      - free:
-          quota:
-            limit: 1000
-            period: MONTH # This means 1000 calls / month as maximum
-          throttle:
-            rateLimit: 5 # Maximum calls per second as average (To avoid DDOS)
-            burstLimit: 20 # For a short burst, the maximum calls per second
-      - paid: # To allow unlimited, dont include quota object
-          quota:
-            limit: 10000
-            period: MONTH
-          throttle:
-            rateLimit: 50
-            burstLimit: 200
-plugins:
-  - serverless-s3-sync
-  - serverless-webpack
-
-package:
-  individually: true
 
 custom:
-  tableName: player-points
-  bucketName: myserverlessprojectuploadbucket-7342657832467
-  s3Sync:
-    - bucketName: ${self:custom.bucketName}
-      localDir: UploadData
+  tableName: WebsocketUsers
 
 functions:
-  getUser:
-    handler: lambdas/endpoints/getUser.handler
+  websocket-connect:
+    handler: lambdas/websockets/connect.handler
     events:
-      - http:
-          path: get-user/{ID}
-          method: GET
-          cors: true
-          private: true # For API keys
-  getPlayerScore:
-    handler: lambdas/endpoints/getPlayerScore.handler
+      - websocket:
+          route: $connect # built-in routes
+  websocket-disconnect:
+    handler: lambdas/websockets/disconnect.handler
     events:
-      - http:
-          path: get-player-score/{ID}
-          method: GET
-          cors: true
-  createPlayerScore:
-    handler: lambdas/endpoints/createPlayerScore.handler
+      - websocket:
+          route: $disconnect
+  websocket-default:
+    handler: lambdas/websockets/default.handler
     events:
-      - http:
-          path: create-player-score/{ID}
-          method: POST
-          cors: true
-  createFile:
-    handler: lambdas/endpoints/createFile.handler
+      - websocket:
+          route: $default
+  websocket-message:
+    handler: lambdas/websockets/message.handler
     events:
-      - http:
-          path: create-file/{fileName}
-          method: POST
-          cors: true
-  getFile:
-    handler: lambdas/endpoints/getFile.handler
-    events:
-      - http:
-          path: get-file/{fileName}
-          method: GET
-          cors: true
-  myProxy:
-    handler: lambdas/endpoints/myProxy.handler
-    events:
-      - http:
-          path: chuck-norris/{proxy+} # Multiple layers of proxy integration
-          method: ANY
-          integration: http-proxy
-          request:
-            uri: http://api.icndb.com/{proxy}
-            parameters:
-              paths:
-                proxy: true
-  sendEmail:
-    handler: lambdas/endpoints/sendEmail.handler
-    events:
-      - http:
-          path: send-email
-          method: POST
-          cors: true
+      - websocket:
+          route: message # route identifier
 
 resources:
   Resources:
-    DemoBucketUpload:
-      Type: AWS::S3::Bucket
-      Properties:
-        BucketName: ${self:custom.bucketName}
-    MyDynamoDbTable:
+    WebSocketUserTable:
       Type: AWS::DynamoDB::Table
       Properties:
         TableName: ${self:custom.tableName}
@@ -127,20 +54,3 @@ resources:
           - AttributeName: ID
             KeyType: HASH
         BillingMode: PAY_PER_REQUEST
-    CognitoUserPool:
-      Type: AWS::Cognito::UserPool
-      Properties:
-        UserPoolName: ${self:provider.stage}-user-pool
-        UsernameAttributes:
-          - email
-        AutoVerifiedAttributes:
-          - email
-    CognitoUserPoolClient:
-      Type: AWS::Cognito::UserPoolClient
-      Properties:
-        ClientName: ${self:provider.stage}-user-pool-client
-        UserPoolId:
-          Ref: CognitoUserPool # This user can acces this user pool
-        ExplicitAuthFlows:
-          - ADMIN_NO_SRP_AUTH
-        GenerateSecret: false
