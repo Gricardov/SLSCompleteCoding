@@ -16,12 +16,23 @@ provider:
         - dynamodb:*
         - sns:SetSMSAttributes
         - sns:Publish
+        - ses:*
       Resource: "*"
 
 custom:
   tableName: WebsocketUsers
 
 functions:
+  # Cronjob
+  sendReminder:
+    handler: lambdas/scheduleTasks/reminderEmail.handler
+    events:
+      - schedule: cron(0 9 ? * 7 *) # min, hours, day of month, day of the week (9am, no matter day of the month, every month, seventh day of the week, every single day)
+  sendMorningNews:
+    handler: lambdas/scheduleTasks/morningNews.handler
+    events:
+      - schedule: cron(15 7 ? * * *)
+
   # SMS
   sendSMS:
     handler: lambdas/endpoints/sendSMS.handler
