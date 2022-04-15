@@ -9,7 +9,7 @@ provider:
   region: us-east-1
   stage: ${opt:stage, 'dev'}
   environment:
-    tableName: ${self:custom.tableName}
+    #tableName: ${self:custom.tableName}
   iamRoleStatements:
     - Effect: Allow
       Action:
@@ -20,27 +20,35 @@ provider:
       Resource: "*"
 
 custom:
-  tableName: WebsocketUsers
+  #tableName: WebsocketUsers
 
 functions:
+  getLunas:
+      handler: lambdas/endpoints/getLunas.manejador
+      events:
+        - http:
+            method: GET
+            path: /getLunas
+            cors: true
+
   # Cronjob
-  sendReminder:
-    handler: lambdas/scheduleTasks/reminderEmail.handler
-    events:
-      - schedule: cron(0 9 ? * 7 *) # min, hours, day of month, day of the week (9am, no matter day of the month, every month, seventh day of the week, every single day)
-  sendMorningNews:
-    handler: lambdas/scheduleTasks/morningNews.handler
-    events:
-      - schedule: cron(15 7 ? * * *)
+  #sendReminder:
+  #  handler: lambdas/scheduleTasks/reminderEmail.handler
+  #  events:
+  #    - schedule: cron(0 9 ? * 7 *) # min, hours, day of month, day of the week (9am, no matter day of the month, every month, seventh day of the week, every single day)
+  #sendMorningNews:
+  #  handler: lambdas/scheduleTasks/morningNews.handler
+  #  events:
+  #    - schedule: cron(15 7 ? * * *)
 
   # SMS
-  sendSMS:
-    handler: lambdas/endpoints/sendSMS.handler
-    events:
-      - http:
-          path: send-sms
-          method: POST
-          cors: true
+  #sendSMS:
+  #  handler: lambdas/endpoints/sendSMS.handler
+  #  events:
+  #    - http:
+  #        path: send-sms
+  #        method: POST
+  #        cors: true
 
   # websocket
   websocket-connect:
@@ -66,14 +74,44 @@ functions:
 
 resources:
   Resources:
-    WebSocketUserTable:
-      Type: AWS::DynamoDB::Table
+    LunasTable: ${file(resources/LunasTable.yml):LunasTable}
+    WebSocketUserTable: ${file(resources/WebSocketUserTable.yml):WebSocketUserTable}
+    # References:
+    # https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_CreateUserPool.html
+    # https://serverless-stack.com/chapters/configure-cognito-user-pool-in-serverless.html
+    # https://forum.serverless.com/t/cognito-userpool-yaml-schema-bashing-my-head-against-a-wall/10287
+    # https://gist.github.com/singledigit/2c4d7232fa96d9e98a3de89cf6ebe7a5
+    # https://forum.serverless.com/t/how-to-get-cognito-user-pool-id-and-the-app-client-id-in-lambda/8334
+    CognitoUserPool:
+      Type: AWS::Cognito::UserPool
       Properties:
-        TableName: ${self:custom.tableName}
-        AttributeDefinitions:
-          - AttributeName: ID
-            AttributeType: S
-        KeySchema:
-          - AttributeName: ID
-            KeyType: HASH
-        BillingMode: PAY_PER_REQUEST
+        UserPoolName: ${self:provider.stage}-030422-user-pool
+        UsernameAttributes: # Atributos con los que el usuarix puede iniciar sesión
+          - email
+          - phone_number
+        AutoVerifiedAttributes: # Medios para verificar la cuenta del usuarix
+          - email
+        # También se puede definir un Schema para que cognito guarde otros datxs
+        Schema:
+          - Name: email
+            AttributeDataType: String
+            Mutable: false
+            Required: true
+          - Name: phone_number
+            AttributeDataType: String
+            Mutable: false
+            Required: true
+          - Name: name
+            AttributeDataType: String
+            Mutable: true
+            Required: true
+    CognitoUserPoolClient:
+      Type: AWS::Cognito::UserPoolClient
+      Properties:
+        ClientName: ${self:provider.stage}-030422-user-pool-client
+        UserPoolId:
+          Ref: CognitoUserPool # This user can access this user pool
+        ExplicitAuthFlows:
+          - ADMIN_NO_SRP_AUTH
+        GenerateSecret: false
+# https://www.freecodecamp.org/news/aws-cognito-authentication-with-serverless-and-nodejs/

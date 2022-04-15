@@ -1,0 +1,28 @@
+LunasTable:
+  Type: AWS::DynamoDB::Table
+  Properties:
+    TableName: LunasTable-${self:provider.stage}
+    BillingMode: PAY_PER_REQUEST
+    AttributeDefinitions:
+      - AttributeName: storyId
+        AttributeType: S
+      - AttributeName: authorId
+        AttributeType: S
+      - AttributeName: createdAt
+        AttributeType: S
+      # An array called "tags" must exist like this [{id (S), color (N), name (S), weight (N)}], but they can't be defined here
+      # If "displayType" is Text, there will be a field shaped like this: "lunaTextModel" {bgColor (N), text (S), textColor (N)}
+      # If "displayType" is Image, there will be a field called "displayUrl"
+      # Other fields: title, expressSynopsis, displayType, is18, content, displayText, keywords, popularity, updatedAt, authorBgImage, authorFName, authorLName, authorFollowName
+    KeySchema:
+      - AttributeName: storyId
+        KeyType: HASH
+    GlobalSecondaryIndexes:
+      - IndexName: authorIdIndex
+        KeySchema:
+          - AttributeName: authorId
+            KeyType: HASH
+          - AttributeName: createdAt
+            KeyType: RANGE
+        Projection:
+          ProjectionType: ALL #To get all the attributes even if I query by an index

@@ -1,0 +1,11 @@
+WebSocketUserTable:
+  Type: AWS::DynamoDB::Table
+  Properties:
+    TableName: WebsocketUsers-${self:provider.stage}
+    AttributeDefinitions:
+      - AttributeName: ID
+        AttributeType: S
+    KeySchema:
+      - AttributeName: ID
+        KeyType: HASH
+    BillingMode: PAY_PER_REQUEST
