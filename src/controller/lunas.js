@@ -2,7 +2,7 @@ import { queryDB } from '../rds/pool';
 
 export async function getLunasByRateAndDateDesc(limit = 3) {
     //const { editorialId, serviceId } = req.params;
-    const membersRes = await queryDB('SELECT * FROM CONTACT_APPS', []);
+    const membersRes = await queryDB('SELECT * FROM LUNAS', []);
     return membersRes;
 };
 

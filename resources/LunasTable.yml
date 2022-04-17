@@ -15,9 +15,9 @@ LunasTable:
       - AttributeName: popularityPlusCreatedAt # This field is the sum of popularity and createdAt, to query by both values
         AttributeType: N
       # An array called "tags" must exist like this [{id (S), color (N), name (S), weight (N)}], but they can't be defined here
-      # If "displayType" is Text, there will be a field shaped like this: "lunaTextModel" {bgColor (N), text (S), textColor (N)}
-      # If "displayType" is Image, there will be a field called "displayUrl"
-      # Other fields: title, expressSynopsis, displayType, is18, content, displayText, keywords, updatedAt, authorBgImage, authorFName, authorLName, authorFollowName
+      # If "displayType" is Text, there will be a field shaped like this: "lunaModel" {bgColor (N), text (S), textColor (N)}
+      # If "displayType" is Image, there will be a field shaped like this: "lunaModel" {displayUrl (S)}
+      # Other fields: title, expressSynopsis, displayType, is18, content, keywords, updatedAt, authorBgImage, authorFName, authorLName, authorFollowName
     KeySchema:
       - AttributeName: storyId
         KeyType: HASH
