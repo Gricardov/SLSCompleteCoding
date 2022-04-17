@@ -1,5 +1,5 @@
-const Responses = require('../common/API_Responses');
-const AWS = require('aws-sdk');
+import Responses from '../utils/API_Responses';
+import AWS from 'aws-sdk';
 
 const SNS = new AWS.SNS({ apiVersion: '2010-03-31' });
 

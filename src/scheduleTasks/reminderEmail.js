@@ -1,5 +1,5 @@
-const AWS = require('aws-sdk');
-const Responses = require('../common/API_Responses');
+import AWS from 'aws-sdk';
+import Responses from '../utils/API_Responses';
 
 const SES = new AWS.SES();
 

@@ -1,4 +1,4 @@
-const AWS = require('aws-sdk');
+import AWS from 'aws-sdk';
 
 const s3Client = new AWS.S3();
 
@@ -39,4 +39,4 @@ const S3 = {
     }
 }
 
-module.exports = S3;
+export default S3;

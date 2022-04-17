@@ -8,7 +8,7 @@ const Responses = {
             },
             statusCode: 200,
             body: JSON.stringify(data)
-        }
+        };
     },
     _400(data = {}) {
         return {
@@ -19,8 +19,8 @@ const Responses = {
             },
             statusCode: 400,
             body: JSON.stringify(data)
-        }
+        };
     },
 };
 
-module.exports = Responses;
+export default Responses;

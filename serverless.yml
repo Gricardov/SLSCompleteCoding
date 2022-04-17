@@ -1,15 +1,23 @@
 service: myserverlessproject2
 
-frameworkVersion: "3"
+frameworkVersion: "2"
+
+plugins:
+  - serverless-bundle
+  - serverless-webpack
+
+package:
+  individually: true
 
 provider:
   name: aws
-  runtime: nodejs12.x
+  runtime: nodejs14.x
   profile: serverlessUser
   region: us-east-1
   stage: ${opt:stage, 'dev'}
-  environment:
+  #environment:
     #tableName: ${self:custom.tableName}
+    #LUNAS_TABLE_NAME: ${self:custom.LunasTable.name}
   iamRoleStatements:
     - Effect: Allow
       Action:
@@ -19,31 +27,28 @@ provider:
         - ses:*
       Resource: "*"
 
-custom:
-  #tableName: WebsocketUsers
-
 functions:
   getLunas:
-      handler: lambdas/endpoints/getLunas.manejador
-      events:
-        - http:
-            method: GET
-            path: /getLunas
-            cors: true
+    handler: src/endpoints/getLunas.handler
+    events:
+      - http:
+          method: GET
+          path: /getLunas/{ID}
+          cors: true
 
   # Cronjob
   #sendReminder:
-  #  handler: lambdas/scheduleTasks/reminderEmail.handler
+  #  handler: src/scheduleTasks/reminderEmail.handler
   #  events:
   #    - schedule: cron(0 9 ? * 7 *) # min, hours, day of month, day of the week (9am, no matter day of the month, every month, seventh day of the week, every single day)
   #sendMorningNews:
-  #  handler: lambdas/scheduleTasks/morningNews.handler
+  #  handler: src/scheduleTasks/morningNews.handler
   #  events:
   #    - schedule: cron(15 7 ? * * *)
 
   # SMS
   #sendSMS:
-  #  handler: lambdas/endpoints/sendSMS.handler
+  #  handler: src/endpoints/sendSMS.handler
   #  events:
   #    - http:
   #        path: send-sms
@@ -52,30 +57,30 @@ functions:
 
   # websocket
   websocket-connect:
-    handler: lambdas/websockets/connect.handler
+    handler: src/websockets/connect.handler
     events:
       - websocket:
           route: $connect # built-in routes
   websocket-disconnect:
-    handler: lambdas/websockets/disconnect.handler
+    handler: src/websockets/disconnect.handler
     events:
       - websocket:
           route: $disconnect
   websocket-default:
-    handler: lambdas/websockets/default.handler
+    handler: src/websockets/default.handler
     events:
       - websocket:
           route: $default
   websocket-message:
-    handler: lambdas/websockets/message.handler
+    handler: src/websockets/message.handler
     events:
       - websocket:
           route: message # route identifier
 
 resources:
   Resources:
-    LunasTable: ${file(resources/LunasTable.yml):LunasTable}
-    WebSocketUserTable: ${file(resources/WebSocketUserTable.yml):WebSocketUserTable}
+    # LunasTable: ${file(resources/LunasTable.yml):LunasTable}
+    # WebSocketUserTable: ${file(resources/WebSocketUserTable.yml):WebSocketUserTable}
     # References:
     # https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_CreateUserPool.html
     # https://serverless-stack.com/chapters/configure-cognito-user-pool-in-serverless.html
@@ -114,4 +119,13 @@ resources:
         ExplicitAuthFlows:
           - ADMIN_NO_SRP_AUTH
         GenerateSecret: false
-# https://www.freecodecamp.org/news/aws-cognito-authentication-with-serverless-and-nodejs/
+        # https://www.freecodecamp.org/news/aws-cognito-authentication-with-serverless-and-nodejs/
+  #Outputs:
+    #LunaTableName: ${file(resources/LunasTable.yml):Outputs.LunasTableName}
+    #LunaTableArn: ${file(resources/LunasTable.yml):Outputs.LunasTableArn}
+
+#custom:
+  #tableName: WebsocketUsers
+  #LunasTable:
+    #name: !Ref LunasTable #nombre lógico de iamRoleStatemens
+    #arn: !GetAtt LunasTable.Arn

@@ -1,6 +1,6 @@
 // Called everytime when we connect to the socket
-const Responses = require('../common/API_Responses');
-const Dynamo = require('../common/Dynamo');
+import Responses from '../utils/API_Responses';
+import Dynamo from '../utils/Dynamo';
 
 const tableName = process.env.tableName;
 
@@ -16,7 +16,7 @@ exports.handler = async event => {
         messages: [],
         domainName,
         stage
-    }
+    };
 
     await Dynamo.write(data, tableName);
 

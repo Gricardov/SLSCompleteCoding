@@ -1,4 +1,4 @@
-const AWS = require('aws-sdk');
+import AWS from 'aws-sdk';
 
 const documentClient = new AWS.DynamoDB.DocumentClient();
 
@@ -7,7 +7,7 @@ const Dynamo = {
         const params = {
             TableName,
             Key: {
-                ID
+                storyId: ID
             }
         };
 
@@ -49,6 +49,6 @@ const Dynamo = {
 
         return documentClient.delete(params).promise();
     }
-}
+};
 
-module.exports = Dynamo;
+export default Dynamo;

@@ -1,5 +1,5 @@
-const Responses = require('../common/API_Responses');
-const Dynamo = require('../common/Dynamo');
+import Responses from '../utils/API_Responses';
+import Dynamo from '../utils/Dynamo';
 
 const tableName = process.env.tableName;
 

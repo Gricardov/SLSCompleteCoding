@@ -29,3 +29,7 @@ FOR AMPLIFY:
     > amplify add auth
     > amplify push
     > npm i --save aws-amplify @aws-amplify/ui-react
+
+> Tutorial DB
+admin
+T...

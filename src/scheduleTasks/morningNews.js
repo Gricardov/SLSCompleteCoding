@@ -1,7 +1,6 @@
-const AWS = require('aws-sdk');
-const Axios = require('axios').default;
-const Responses = require('../common/API_Responses');
-
+import AWS from 'aws-sdk';
+import Responses from '../utils/API_Responses';
+const { default: Axios } = import('axios');
 const SES = new AWS.SES();
 
 const newsURL = 'https://newsapi.org'
@@ -63,7 +62,7 @@ const getNews = async () => {
     }
 
     const { data: newsData } = await Axios.get(`${newsURL}/v2/top-headlines`, options);
-    
+
     if (!newsData) {
         throw Error('No data from the news API');
     }
