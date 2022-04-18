@@ -33,7 +33,14 @@ functions:
     events:
       - http:
           method: GET
-          path: /getLunas/{ID}
+          path: /getLunas
+          cors: true
+  getLuna:
+    handler: src/endpoints/getLuna.handler
+    events:
+      - http:
+          method: GET
+          path: /getLuna/{id}
           cors: true
 
   # Cronjob

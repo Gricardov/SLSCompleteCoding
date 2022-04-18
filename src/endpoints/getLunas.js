@@ -1,15 +1,12 @@
 import middleware from '../utils/lambdaMiddleware';
-import { getLunasByRateAndDateDesc } from '../controller/lunas';
-import { notifyServerError } from '../utils/errorUtils';
+import { getLunasPreviewByPopularity } from '../controller/lunas';
+import { notifyServerError, getServerResponse } from '../utils/lambdaUtils';
 
 async function getLunas(event, context) {
     context.callbackWaitsForEmptyEventLoop = false;
     try {
-        const result = await getLunasByRateAndDateDesc(3);
-        return {
-            statusCode: 200,
-            body: JSON.stringify({ payload: result })
-        };
+        const result = await getLunasPreviewByPopularity(5);
+        return getServerResponse(200, result);
     } catch (error) {
         console.log(error);
         notifyServerError(500, 'Error al obtener las lunas');

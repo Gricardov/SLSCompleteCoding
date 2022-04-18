@@ -1,9 +1,13 @@
 import { queryDB } from '../rds/pool';
 
-export async function getLunasByRateAndDateDesc(limit = 3) {
-    //const { editorialId, serviceId } = req.params;
-    const membersRes = await queryDB('SELECT * FROM LUNAS', []);
-    return membersRes;
+export async function getLunasPreviewByPopularity(limit = 5) {
+    const comRes = await queryDB('CALL USP_GET_LUNAS_PREVIEW_BY_POPULARITY(?)', [limit]);
+    return comRes[0] || [];
+};
+
+export async function getLunaWithContentById(id) {
+    const comRes = await queryDB('CALL USP_GET_LUNA_WITH_CONTENT_BY_ID(?)', [id]);
+    return comRes[0][0] || {};
 };
 
 /*export async function getLunasByRateAndDateDesc(limit = 3) {
