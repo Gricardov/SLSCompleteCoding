@@ -1,8 +1,8 @@
-set global max_connections = 200;
-
 CREATE DATABASE TL;
 
 USE TL;
+
+SET NAMES UTF8MB4;
 
 -- Authors
 CREATE TABLE IF NOT EXISTS USERS (
@@ -40,7 +40,7 @@ CREATE TABLE IF NOT EXISTS LUNAS (
   title VARCHAR(200) NOT NULL,
   expressSynopsis VARCHAR(500) NOT NULL,
   is18 TINYINT NOT NULL,
-  content VARCHAR(50000) NOT NULL,
+  content VARCHAR(5000) NOT NULL,
   authorId VARCHAR(50) NOT NULL,
   authorData JSON NOT NULL DEFAULT '{}',
   popularity INT NOT NULL,
@@ -145,6 +145,11 @@ INSERT INTO LUNAS VALUES (
   DEFAULT,
   DEFAULT
 );
+
+UPDATE LUNAS SET
+lunaModel = '{"bgColor":4278238420,"text":"¿Leerías una historia donde dos hermanas se enamoran? Desliza para leer 🤗","textColor":4278190080}',
+categories = '[{"id":"sdfsdf","color":4283657726,"name":"Bestiality","weight":1},{"id":"ertert","color":4278238420,"name":"Lesbian","weight":2},{"id":"oiuy","color":4284809178,"name":"Adventure","weight":3}]'
+WHERE id =  'ubf3d-1233-gf';
 
 
 -- Tests

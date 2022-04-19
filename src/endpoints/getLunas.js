@@ -6,7 +6,7 @@ async function getLunas(event, context) {
     context.callbackWaitsForEmptyEventLoop = false;
     try {
         const result = await getLunasPreviewByPopularity(5);
-        return getServerResponse(200, result);
+        return getServerResponse(200, result.map(res => ({ ...res, is18: !!res.is18 })));
     } catch (error) {
         console.log(error);
         notifyServerError(500, 'Error al obtener las lunas');

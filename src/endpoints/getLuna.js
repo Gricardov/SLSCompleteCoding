@@ -11,9 +11,10 @@ async function getLuna(event, context) {
         // Must be shaped like what the getLunas endpoints returns
         let shapedResult = {};
         if (Object.keys(result).length > 0) {
-            const { authorFName, authorLName, authorProfileImgUrl, authorUsername, ...rest } = result;
+            const { authorFName, authorLName, authorProfileImgUrl, authorUsername, is18, ...rest } = result;
             shapedResult = {
                 ...rest,
+                is18: !!is18,
                 authorData: {
                     fName: authorFName,
                     lName: authorLName,

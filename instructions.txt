@@ -31,5 +31,13 @@ FOR AMPLIFY:
     > npm i --save aws-amplify @aws-amplify/ui-react
 
 > Tutorial DB
+
+For autor-managed MariaDB, set default charset and collation to utf8mb4:
+https://mathiasbynens.be/notes/mysql-utf8mb4#utf8-to-utf8mb4
+
+For cloud-managed MariaDB, edit parameter groups:
+https://aws.amazon.com/es/blogs/database/best-practices-for-configuring-parameters-for-amazon-rds-for-mysql-part-3-parameters-related-to-security-operational-manageability-and-connectivity-timeout/
+
+Test credentials:
 admin
 T...

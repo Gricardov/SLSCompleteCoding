@@ -11,6 +11,7 @@ const mysql = slsMySQL({
         password: credentials.password,
         database: credentials.database,
         port: credentials.port,
+        charset: 'utf8mb4',
         timezone: '+00:00',
         dateStrings: ['DATE', 'DATETIME'],
         typeCast: (field, next) => { // Para hacer el parseo a JSON automáticamente
