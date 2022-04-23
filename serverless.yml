@@ -42,6 +42,13 @@ functions:
           method: GET
           path: /getLuna/{id}
           cors: true
+  createLuna:
+    handler: src/endpoints/createLuna.handler
+    events:
+      - http:
+          method: POST
+          path: /createLuna
+          cors: true
 
   # Cronjob
   #sendReminder:

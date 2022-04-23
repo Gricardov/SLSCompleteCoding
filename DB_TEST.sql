@@ -1,8 +1,8 @@
+SET NAMES UTF8MB4;
+
 CREATE DATABASE TL;
 
 USE TL;
-
-SET NAMES UTF8MB4;
 
 -- Authors
 CREATE TABLE IF NOT EXISTS USERS (
@@ -44,7 +44,7 @@ CREATE TABLE IF NOT EXISTS LUNAS (
   authorId VARCHAR(50) NOT NULL,
   authorData JSON NOT NULL DEFAULT '{}',
   popularity INT NOT NULL,
-  statisticsData JSON NOT NULL DEFAULT '{}',
+  statisticsData JSON NOT NULL DEFAULT '{"numViews":0,"numComments":0}',
   displayType VARCHAR(50) NOT NULL,
   -- If "displayType" is Text, there will be a field shaped like this: "lunaModel" {bgColor (N), text (S), textColor (N)}
   -- If "displayType" is Image, there will be a field shaped like this: "lunaModel" {displayUrl (S)}
@@ -99,6 +99,7 @@ BEGIN
     U.lName AS 'authorLName',
     U.profileImgUrl AS 'authorProfileImgUrl',
     U.username AS 'authorUsername',
+    L.content,
     L.statisticsData,
     L.displayType,
     L.lunaModel,
@@ -112,6 +113,36 @@ BEGIN
 END; //
 DELIMITER ;
 
+-- This creates a luna
+DROP PROCEDURE IF EXISTS USP_CREATE_LUNA;
+DELIMITER //
+CREATE PROCEDURE USP_CREATE_LUNA (
+IN P_LUNA_ID VARCHAR(50),
+IN P_LUNA_TITLE VARCHAR(200),
+IN P_LUNA_EXPRESS_SYNOPSIS VARCHAR(500),
+IN P_LUNA_IS18 TINYINT,
+IN P_LUNA_CONTENT VARCHAR(5000),
+IN P_LUNA_AUTHOR_ID VARCHAR(50),
+IN P_LUNA_DISPLAY_TYPE VARCHAR(50),
+IN P_LUNA_MODEL JSON,
+IN P_LUNA_CATEGORIES JSON,
+IN P_LUNA_KEYWORDS JSON
+)
+BEGIN
+	DECLARE V_AUTHOR_FNAME VARCHAR(100);
+   DECLARE V_AUTHOR_LNAME VARCHAR(100);
+   DECLARE V_AUTHOR_USERNAME VARCHAR(100);
+   DECLARE V_AUTHOR_DISPLAY_URL VARCHAR(500);
+   DECLARE V_AUTHOR_JSON_DATA JSON;
+   
+   SELECT fName, lName, username, profileImgUrl INTO V_AUTHOR_FNAME, V_AUTHOR_LNAME, V_AUTHOR_USERNAME, V_AUTHOR_DISPLAY_URL FROM USERS WHERE id = P_LUNA_AUTHOR_ID;
+   
+   SET V_AUTHOR_JSON_DATA = JSON_OBJECT("fName", V_AUTHOR_FNAME, "lName", V_AUTHOR_LNAME, "username", V_AUTHOR_USERNAME, "profileImgUrl", V_AUTHOR_DISPLAY_URL);
+   
+	INSERT INTO LUNAS VALUES (P_LUNA_ID, P_LUNA_TITLE, P_LUNA_EXPRESS_SYNOPSIS, P_LUNA_IS18, P_LUNA_CONTENT, P_LUNA_AUTHOR_ID, V_AUTHOR_JSON_DATA, 1, DEFAULT, P_LUNA_DISPLAY_TYPE, P_LUNA_MODEL, P_LUNA_CATEGORIES, P_LUNA_KEYWORDS, DEFAULT, DEFAULT);
+END; //
+DELIMITER ;
+
 
 -- Insertions
 
@@ -120,7 +151,7 @@ INSERT INTO USERS VALUES (
   'jsdfhgf-234',
   'Alyoh',
   'Mascaritah',
-  'https://apksos.com/storage/images/com/animated/florkstickersmemes/com.animated.florkstickersmemes_1.png',
+   NULL,-- 'https://apksos.com/storage/images/com/animated/florkstickersmemes/com.animated.florkstickersmemes_1.png',
   'alyohmascarita',
   'gricardov@gmail.com',
   NULL,
@@ -139,22 +170,36 @@ INSERT INTO LUNAS VALUES (
   1,
   '{"numViews":1,"numComments":3}',
   'Text',
-  '{"bgColor":0,"text":"Hola bola","textColor":1}',
-  '[{"id":"sdfsdf","color":0,"name":"Bestiality","weight":1},{"id":"ertert","color":0,"name":"Lesbian","weight":2},{"id":"oiuy","color":0,"name":"Adventure","weight":3}]',
+  '{"bgColor":4278238420,"text":"¿Leerías una historia donde dos hermanas se enamoran? Desliza para leer 🤗","textColor":4278190080}',
+  '[{"id":"sdfsdf","color":4283657726,"name":"Bestiality","weight":1},{"id":"ertert","color":4278238420,"name":"Lesbian","weight":2},{"id":"oiuy","color":4284809178,"name":"Adventure","weight":3}]',
   '["el","misterio","de","shany","dubi"]',
   DEFAULT,
   DEFAULT
 );
 
-UPDATE LUNAS SET
-lunaModel = '{"bgColor":4278238420,"text":"¿Leerías una historia donde dos hermanas se enamoran? Desliza para leer 🤗","textColor":4278190080}',
-categories = '[{"id":"sdfsdf","color":4283657726,"name":"Bestiality","weight":1},{"id":"ertert","color":4278238420,"name":"Lesbian","weight":2},{"id":"oiuy","color":4284809178,"name":"Adventure","weight":3}]'
-WHERE id =  'ubf3d-1233-gf';
+INSERT INTO LUNAS VALUES (
+ 'ubf3d-1233-gf2',
+ 'La chica que nunca se me declaró',
+ '¿Quién dice que solo uno debe tener iniciativa?',
+ 0,
+ 'What is Lorem Ipsum? Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industrys standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.',
+ 'ueytg-ert-234',
+ '{"fName":"Alyoh","lName":"Mascaritah","username":"alyohmascarita","profileImgUrl":"https://apksos.com/storage/images/com/animated/florkstickersmemes/com.animated.florkstickersmemes_1.png"}',
+  1,
+  '{"numViews":2,"numComments":8}',
+  'Image',
+  '{"displayUrl":"https://w0.peakpx.com/wallpaper/760/936/HD-wallpaper-couple-separation-sunlight-love-sad.jpg"}',
+  '[{"id":"sdfsdf","color":4283657726,"name":"Amor","weight":1},{"id":"ertert","color":4278238420,"name":"Desamor","weight":2},{"id":"oiuy","color":4284809178,"name":"Llorona","weight":3}]',
+  '["la","chica","que","nunca","declaró"]',
+  DEFAULT,
+  DEFAULT
+);
 
 
 -- Tests
 
 CALL USP_GET_LUNAS_PREVIEW_BY_POPULARITY (1);
 CALL USP_GET_LUNA_WITH_CONTENT_BY_ID ('ubf3d-1233-gf');
-
-
+CALL USP_CREATE_LUNA ('bella-linda','La maldita primavera','Pasa ligera la maldita primaverx',0, 'Princesa de fresa, ¡Cuánto te extraño!','ueytg-ert-234','Image','{"displayUrl":"https://buidln.clipdealer.com/001/813/868//player/1--1813868-young-sexy-girl-kiss-with-passion.jpg"}','[{"id":"sdfsdf","color":4283657726,"name":"Scissoring","weight":1},{"id":"ertert","color":4278238420,"name":"Lesbianism","weight":2},{"id":"oiuy","color":4284809178,"name":"Tribing","weight":3}]','["bailan","las","negras"]');
+DELETE FROM LUNAS WHERE id = 'bella-linda';
+SELECT*FROM LUNAS;

@@ -1,3 +1,5 @@
+- Serverless config step:
+
 1- Create an IAM user, "serverlessAccount".
 2- Give programmatic acces and Attach policy directly, "Administration Access".
 3- Copy Access key ID and Secret Access key
@@ -21,7 +23,7 @@ Deploy with:
 Deply only functions with:
     > sls deploy -f <function-name>
 
-FOR AMPLIFY:
+- For Amplify:
     > npm install -g @aws-amplify/cli
     > npx create-react-app <app-name>
     > amplify configure (be logged in as admin to setup IAM roles, etc)
@@ -30,14 +32,17 @@ FOR AMPLIFY:
     > amplify push
     > npm i --save aws-amplify @aws-amplify/ui-react
 
-> Tutorial DB
+- Tutorial DB
 
-For autor-managed MariaDB, set default charset and collation to utf8mb4:
-https://mathiasbynens.be/notes/mysql-utf8mb4#utf8-to-utf8mb4
+For auto-managed MariaDB, set default charset and collation to utf8mb4 according to the table:
+#1: https://mathiasbynens.be/notes/mysql-utf8mb4#utf8-to-utf8mb4
 
-For cloud-managed MariaDB, edit parameter groups:
-https://aws.amazon.com/es/blogs/database/best-practices-for-configuring-parameters-for-amazon-rds-for-mysql-part-3-parameters-related-to-security-operational-manageability-and-connectivity-timeout/
+For cloud-managed MariaDB, just edit parameter groups according to the table above:
+#2: https://aws.amazon.com/es/blogs/database/best-practices-for-configuring-parameters-for-amazon-rds-for-mysql-part-3-parameters-related-to-security-operational-manageability-and-connectivity-timeout/
 
-Test credentials:
+https://stackoverflow.com/questions/51368663/flutter-fetched-japanese-character-from-server-decoded-wrong
+
+- Test credentials:
+
 admin
 T...
