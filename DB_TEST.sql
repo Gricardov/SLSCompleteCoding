@@ -140,6 +140,7 @@ BEGIN
    SET V_AUTHOR_JSON_DATA = JSON_OBJECT("fName", V_AUTHOR_FNAME, "lName", V_AUTHOR_LNAME, "username", V_AUTHOR_USERNAME, "profileImgUrl", V_AUTHOR_DISPLAY_URL);
    
 	INSERT INTO LUNAS VALUES (P_LUNA_ID, P_LUNA_TITLE, P_LUNA_EXPRESS_SYNOPSIS, P_LUNA_IS18, P_LUNA_CONTENT, P_LUNA_AUTHOR_ID, V_AUTHOR_JSON_DATA, 1, DEFAULT, P_LUNA_DISPLAY_TYPE, P_LUNA_MODEL, P_LUNA_CATEGORIES, P_LUNA_KEYWORDS, DEFAULT, DEFAULT);
+	CALL USP_GET_LUNA_WITH_CONTENT_BY_ID (P_LUNA_ID);
 END; //
 DELIMITER ;
 
@@ -201,5 +202,5 @@ INSERT INTO LUNAS VALUES (
 CALL USP_GET_LUNAS_PREVIEW_BY_POPULARITY (1);
 CALL USP_GET_LUNA_WITH_CONTENT_BY_ID ('ubf3d-1233-gf');
 CALL USP_CREATE_LUNA ('bella-linda','La maldita primavera','Pasa ligera la maldita primaverx',0, 'Princesa de fresa, ¡Cuánto te extraño!','ueytg-ert-234','Image','{"displayUrl":"https://buidln.clipdealer.com/001/813/868//player/1--1813868-young-sexy-girl-kiss-with-passion.jpg"}','[{"id":"sdfsdf","color":4283657726,"name":"Scissoring","weight":1},{"id":"ertert","color":4278238420,"name":"Lesbianism","weight":2},{"id":"oiuy","color":4284809178,"name":"Tribing","weight":3}]','["bailan","las","negras"]');
-DELETE FROM LUNAS WHERE id = 'bella-linda';
+DELETE FROM LUNAS WHERE id = 'e546f89deb124051926e1e358fa73324';
 SELECT*FROM LUNAS;

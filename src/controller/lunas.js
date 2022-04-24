@@ -11,8 +11,8 @@ export async function getLunaWithContentById(id) {
 };
 
 export async function addLuna(id, title, expressSynopsis, is18, content, authorId, displayType, lunaModel, categories, keywords) {
-    const comRes = await queryDB('CALL USP_CREATE_LUNA(?,?,?,?,?,?,?,?,?,?)', [id, title, expressSynopsis, is18, content, authorId, displayType, JSON.stringify(lunaModel), categories, keywords]);
-    return comRes[0][0];
+    const comRes = await queryDB('CALL USP_CREATE_LUNA(?,?,?,?,?,?,?,?,?,?)', [id, title, expressSynopsis, is18, content, authorId, displayType, JSON.stringify(lunaModel), JSON.stringify(categories), JSON.stringify(keywords)]);
+    return comRes[0][0] || {};
 };
 
 /*export async function getLunasByRateAndDateDesc(limit = 3) {
